@@ -1,0 +1,1 @@
+export { CookiePage } from './cookie';

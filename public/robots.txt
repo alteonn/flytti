@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+
+# Prevent duplicate content
+Disallow: /admin/
+Disallow: /api/
+Disallow: /*/print
+Disallow: /*?*
+
+# Sitemaps
+Sitemap: https://flytti.se/sitemap.xml
+
+# Crawl-delay
+Crawl-delay: 10

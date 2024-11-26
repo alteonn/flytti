@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <!-- Huvudsidor -->
+  <url>
+    <loc>https://flytti.se/</loc>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <lastmod>2024-03-15</lastmod>
+  </url>
+
+  <!-- Tjänster - Högst prioritet efter startsidan -->
+  <url>
+    <loc>https://flytti.se/flytthjalp</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <lastmod>2024-03-15</lastmod>
+  </url>
+  <url>
+    <loc>https://flytti.se/foretagsflytt</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <lastmod>2024-03-15</lastmod>
+  </url>
+  <url>
+    <loc>https://flytti.se/utlandsflytt</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <lastmod>2024-03-15</lastmod>
+  </url>
+  <url>
+    <loc>https://flytti.se/flyttstadning</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <lastmod>2024-03-15</lastmod>
+  </url>
+  <url>
+    <loc>https://flytti.se/magasinering</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <lastmod>2024-03-15</lastmod>
+  </url>
+  <url>
+    <loc>https://flytti.se/dodsbo</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <lastmod>2024-03-15</lastmod>
+  </url>
+
+  <!-- Företagssidor -->
+  <url>
+    <loc>https://flytti.se/sok-foretag</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2024-03-15</lastmod>
+  </url>
+  <url>
+    <loc>https://flytti.se/anslut-foretag</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2024-03-15</lastmod>
+  </url>
+
+  <!-- Städer -->
+  <url>
+    <loc>https://flytti.se/stader</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2024-03-15</lastmod>
+  </url>
+
+  <!-- Innehållssidor -->
+  <url>
+    <loc>https://flytti.se/artiklar</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+    <lastmod>2024-03-15</lastmod>
+  </url>
+
+  <!-- Support och information -->
+  <url>
+    <loc>https://flytti.se/kundtjanst</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <lastmod>2024-03-15</lastmod>
+  </url>
+  <url>
+    <loc>https://flytti.se/villkor</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <lastmod>2024-03-15</lastmod>
+  </url>
+  <url>
+    <loc>https://flytti.se/dataskydd</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <lastmod>2024-03-15</lastmod>
+  </url>
+</urlset>
