@@ -5,15 +5,16 @@ import { Step1 } from './steps/step1';
 import { Step2 } from './steps/step2';
 import { Step3 } from './steps/step3';
 import { Step4 } from './steps/step4';
-import { createLead } from '@/lib/leads';
+import { useZapier } from '@/hooks/use-zapier';
+import { ZAPIER_WEBHOOKS } from '@/lib/zapier-webhooks';
 import { useToast } from '@/hooks/use-toast';
 
 export function CleaningForm() {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<CleaningFormData>(initialCleaningFormData);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const { toast } = useToast();
+  const { submit, isSubmitting } = useZapier({ webhookUrl: ZAPIER_WEBHOOKS.CLEANING });
 
   const totalSteps = 4;
 
@@ -73,10 +74,8 @@ export function CleaningForm() {
       return;
     }
 
-    setIsSubmitting(true);
-
     try {
-      const { success, error } = await createLead({
+      const { success, error } = await submit({
         type: 'Flyttstädning',
         customerName: formData.step4.name,
         customerEmail: formData.step4.email,
@@ -89,15 +88,11 @@ export function CleaningForm() {
           title: "Tack för din förfrågan!",
           description: "Vi kommer att kontakta dig inom kort med offerter från våra städfirmor.",
         });
-        
-        // Show success view
         setIsSuccess(true);
-        
-        // Reset form
         setFormData(initialCleaningFormData);
         setCurrentStep(1);
       } else {
-        throw error;
+        throw new Error(error);
       }
     } catch (error) {
       console.error('Submission error:', error);
@@ -106,8 +101,6 @@ export function CleaningForm() {
         description: error instanceof Error ? error.message : "Kunde inte skicka din förfrågan. Försök igen senare.",
         variant: "destructive",
       });
-    } finally {
-      setIsSubmitting(false);
     }
   };
 

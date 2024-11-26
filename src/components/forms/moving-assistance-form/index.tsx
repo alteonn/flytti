@@ -6,15 +6,16 @@ import { Step2 } from './steps/step2';
 import { Step3 } from './steps/step3';
 import { Step4 } from './steps/step4';
 import { Step5 } from './steps/step5';
-import { createLead } from '@/lib/leads';
+import { useZapier } from '@/hooks/use-zapier';
+import { ZAPIER_WEBHOOKS } from '@/lib/zapier-webhooks';
 import { useToast } from '@/hooks/use-toast';
 
 export function MovingAssistanceForm() {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<MovingFormData>(initialMovingFormData);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const { toast } = useToast();
+  const { submit, isSubmitting } = useZapier({ webhookUrl: ZAPIER_WEBHOOKS.MOVING });
 
   const totalSteps = 5;
 
@@ -74,10 +75,8 @@ export function MovingAssistanceForm() {
       return;
     }
 
-    setIsSubmitting(true);
-
     try {
-      const { success, error } = await createLead({
+      const { success, error } = await submit({
         type: 'Flytthjälp',
         customerName: formData.step5.name,
         customerEmail: formData.step5.email,
@@ -91,14 +90,11 @@ export function MovingAssistanceForm() {
           description: "Vi kommer att kontakta dig inom kort med offerter från våra flyttfirmor.",
         });
         
-        // Show success view
         setIsSuccess(true);
-        
-        // Reset form
         setFormData(initialMovingFormData);
         setCurrentStep(1);
       } else {
-        throw error;
+        throw new Error(error);
       }
     } catch (error) {
       console.error('Submission error:', error);
@@ -107,8 +103,6 @@ export function MovingAssistanceForm() {
         description: error instanceof Error ? error.message : "Kunde inte skicka din förfrågan. Försök igen senare.",
         variant: "destructive",
       });
-    } finally {
-      setIsSubmitting(false);
     }
   };
 

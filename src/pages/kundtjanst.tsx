@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin, Clock, MessageSquare, Building2, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Mail, MapPin, Phone, Loader2 } from 'lucide-react';
 import { ServiceGrid } from '@/components/home/service-grid';
 import { useToast } from '@/hooks/use-toast';
-import { sendEmail } from '@/lib/email';
+import { useZapier } from '@/hooks/use-zapier';
+import { ZAPIER_WEBHOOKS } from '@/lib/zapier-webhooks';
 import { MetaTags } from '@/components/seo/meta-tags';
 import { pageSEO } from '@/lib/seo-content';
 
@@ -41,38 +42,21 @@ const contactMethods = [
     href: 'mailto:info@flytti.se',
   },
   {
-    icon: Building2,
-    title: 'Företagspartner',
-    description: 'Vill du ansluta ditt företag?',
-    action: 'Bli partner',
-    href: '/anslut-foretag',
-    isLink: true,
-  },
-];
-
-const faqItems = [
-  {
-    question: 'Hur fungerar er tjänst?',
-    answer: 'Vi hjälper dig att hitta och jämföra flyttfirmor i hela Sverige. Du fyller i ett formulär med dina behov, och vi matchar dig med upp till tre lämpliga flyttfirmor som kontaktar dig med offerter.',
-  },
-  {
-    question: 'Kostar det något att använda tjänsten?',
-    answer: 'Nej, det är helt kostnadsfritt att använda vår tjänst för att få offerter. Du betalar endast om du väljer att anlita någon av flyttfirmorna.',
-  },
-  {
-    question: 'Hur väljer ni ut flyttfirmorna?',
-    answer: 'Vi samarbetar endast med kvalitetssäkrade och seriösa flyttfirmor. Alla företag granskas noggrant och måste uppfylla våra kvalitetskrav gällande försäkringar, tillstånd och kundnöjdhet.',
+    icon: MapPin,
+    title: 'Besöksadress',
+    description: 'Vårt huvudkontor',
+    action: 'Stjärntorget 2, Solna',
+    href: 'https://maps.google.com',
   },
 ];
 
 export function CustomerServicePage() {
   const [formData, setFormData] = useState<FormData>(initialFormData);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const { submit, isSubmitting } = useZapier({ webhookUrl: ZAPIER_WEBHOOKS.CONTACT });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
 
     try {
       // Validate form data
@@ -86,130 +70,19 @@ export function CustomerServicePage() {
         throw new Error('Vänligen ange en giltig e-postadress');
       }
 
-      // Send confirmation email to customer
-      await sendEmail({
-        to: formData.email,
-        subject: 'Tack för ditt meddelande | Flytti.se',
-        html: `
-          <!DOCTYPE html>
-          <html>
-            <head>
-              <meta charset="utf-8">
-              <style>
-                body { 
-                  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-                  line-height: 1.6;
-                  color: #333;
-                  max-width: 600px;
-                  margin: 0 auto;
-                  padding: 20px;
-                }
-                .header {
-                  background: #e5683d;
-                  color: white;
-                  padding: 20px;
-                  border-radius: 8px;
-                  margin-bottom: 30px;
-                }
-                .content {
-                  background: #fff;
-                  padding: 20px;
-                  border-radius: 8px;
-                  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-                }
-                .footer {
-                  text-align: center;
-                  margin-top: 30px;
-                  padding-top: 20px;
-                  border-top: 1px solid #eee;
-                  color: #666;
-                  font-size: 14px;
-                }
-              </style>
-            </head>
-            <body>
-              <div class="header">
-                <h2>Tack för ditt meddelande!</h2>
-              </div>
-              <div class="content">
-                <p>Hej ${formData.name},</p>
-                <p>Vi har mottagit ditt meddelande och återkommer så snart som möjligt med svar.</p>
-                <p>Ditt ärende:</p>
-                <ul>
-                  <li><strong>Ämne:</strong> ${formData.subject}</li>
-                  <li><strong>Meddelande:</strong> ${formData.message}</li>
-                </ul>
-                <p>Med vänliga hälsningar,<br>Teamet på Flytti.se</p>
-              </div>
-              <div class="footer">
-                Detta är ett automatiskt meddelande. Du behöver inte svara på detta mail.
-              </div>
-            </body>
-          </html>
-        `
-      });
+      const { success, error } = await submit(formData);
 
-      // Send notification email to admin
-      await sendEmail({
-        to: 'info@flytti.se',
-        subject: 'Nytt meddelande via kundtjänstformuläret',
-        html: `
-          <!DOCTYPE html>
-          <html>
-            <head>
-              <meta charset="utf-8">
-              <style>
-                body { 
-                  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-                  line-height: 1.6;
-                  color: #333;
-                  max-width: 600px;
-                  margin: 0 auto;
-                  padding: 20px;
-                }
-                .header {
-                  background: #e5683d;
-                  color: white;
-                  padding: 20px;
-                  border-radius: 8px;
-                  margin-bottom: 30px;
-                }
-                .content {
-                  background: #fff;
-                  padding: 20px;
-                  border-radius: 8px;
-                  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-                }
-              </style>
-            </head>
-            <body>
-              <div class="header">
-                <h2>Nytt kundtjänstärende</h2>
-              </div>
-              <div class="content">
-                <h3>Kontaktinformation</h3>
-                <ul>
-                  <li><strong>Namn:</strong> ${formData.name}</li>
-                  <li><strong>E-post:</strong> ${formData.email}</li>
-                </ul>
-                <h3>Meddelande</h3>
-                <p><strong>Ämne:</strong> ${formData.subject}</p>
-                <p><strong>Meddelande:</strong></p>
-                <p>${formData.message}</p>
-              </div>
-            </body>
-          </html>
-        `
-      });
+      if (success) {
+        toast({
+          title: "Tack för ditt meddelande!",
+          description: "Vi återkommer så snart som möjligt med svar.",
+        });
 
-      // Show success message
-      toast({
-        title: "Tack för ditt meddelande!",
-        description: "Vi har mottagit ditt meddelande och återkommer så snart som möjligt.",
-      });
-
-      // Reset form
-      setFormData(initialFormData);
+        // Reset form
+        setFormData(initialFormData);
+      } else {
+        throw new Error(error);
+      }
     } catch (error) {
       console.error('Error sending message:', error);
       toast({
@@ -217,8 +90,6 @@ export function CustomerServicePage() {
         description: error instanceof Error ? error.message : "Kunde inte skicka meddelandet. Försök igen senare.",
         variant: "destructive",
       });
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -360,41 +231,6 @@ export function CustomerServicePage() {
               </form>
             </div>
           </motion.div>
-        </div>
-      </section>
-
-      {/* FAQ Section */}
-      <section className="py-24 bg-white">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="max-w-3xl mx-auto text-center mb-16"
-          >
-            <h2 className="text-4xl font-serif mb-6">
-              Vanliga frågor
-            </h2>
-            <p className="text-lg text-text-light">
-              Här hittar du svar på de vanligaste frågorna om våra tjänster
-            </p>
-          </motion.div>
-
-          <div className="max-w-3xl mx-auto space-y-6">
-            {faqItems.map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="bg-white rounded-xl p-6 shadow-lg border border-primary/10"
-              >
-                <h3 className="text-xl font-serif mb-3">{item.question}</h3>
-                <p className="text-text-light">{item.answer}</p>
-              </motion.div>
-            ))}
-          </div>
         </div>
       </section>
 
